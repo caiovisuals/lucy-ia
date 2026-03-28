@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+* {
+    font-family: 'Geologica';
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--white-background);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--dark-blue);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--light-blue);
+}
+
+body {
+    background: var(--background);
+    color: var(--text);
+    font-family: 'Geologica';
+}
+
+.transition-normal {
+    transition: all 0.3s ease;
+}
+
+.transition-fast {
+    transition: all 0.15s ease;
+}
+
+:root {
+    --background: #ffffff;
+    --text: #000000;
+}
