@@ -28,6 +28,18 @@ data = [
     ("pode ajudar?", "ajuda"),
     ("como você funciona?", "ajuda"),
 
+    # PERGUNTA GERAL
+    ("o que é isso?", "pergunta_geral"),
+    ("me explica", "pergunta_geral"),
+    ("como funciona?", "pergunta_geral"),
+    ("o que você sabe?", "pergunta_geral"),
+    ("me conta mais", "pergunta_geral"),
+    ("me diz uma coisa", "pergunta_geral"),
+    ("tenho uma dúvida", "pergunta_geral"),
+    ("pode me explicar?", "pergunta_geral"),
+    ("o que você acha?", "pergunta_geral"),
+    ("me fala sobre isso", "pergunta_geral"),
+
     # AGRADECIMENTO
     ("obrigado", "agradecimento"),
     ("valeu", "agradecimento"),
