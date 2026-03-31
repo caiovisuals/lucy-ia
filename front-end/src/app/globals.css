@@ -1,7 +1,15 @@
 @import "tailwindcss";
 
+@font-face {
+    font-family: 'Brockmann';
+    src: url('/fonts/brockmann.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 * {
-    font-family: 'Geologica';
+    font-family: 'Brockmann';
 }
 
 html {
@@ -13,21 +21,24 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--white-background);
+    background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--dark-blue);
+    background: var(--foreground);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--light-blue);
+    background: var(--orange);
 }
 
 body {
     background: var(--background);
-    color: var(--text);
-    font-family: 'Geologica';
+    color: var(--black-text);
+}
+
+button {
+    cursor: pointer;
 }
 
 .transition-normal {
@@ -40,5 +51,10 @@ body {
 
 :root {
     --background: #ffffff;
-    --text: #000000;
+    --foreground: #dabeb3;
+    --border: #d4c8c3;
+    --white-text: #ffffff;
+    --black-text: #000000;
+    --orange: #ff581b;
+    --orange-hover: #b94014;
 }

@@ -1,6 +1,6 @@
 import pickle
 import random
-from utils.preprocessor import normalizar
+from utils.preprocessor import normalize
 
 with open("model/model.pkl", "rb") as f:
     model = pickle.load(f)
@@ -8,7 +8,7 @@ with open("model/model.pkl", "rb") as f:
 with open("model/vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
 
-respostas = {
+answers = {
     "saudacao": ["Oi!", "Olá!", "E aí!", "Como vai?", "Oii, como você vai?"],
     "nome": ["Sou um chat IA simples chamada Lucy", "Me chamam de Lucy Bot!", "Sou Lucy, a sua IA!"],
     "ajuda": [
@@ -29,9 +29,9 @@ respostas = {
     "despedida": ["Tchau!", "Até mais!", "A gente se vê!"]
 }
 
-def responder(mensagem):
-    mensagem = normalizar(mensagem)
-    vetor = vectorizer.transform([mensagem])
+def responder(message):
+    message = normalize(message)
+    vetor = vectorizer.transform([message])
     intent = model.predict(vetor)[0]
 
-    return random.choice(respostas.get(intent, ["Perdão. Não entendi"]))
+    return random.choice(answers.get(intent, ["Perdão. Não entendi"]))

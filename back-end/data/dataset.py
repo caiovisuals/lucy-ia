@@ -6,7 +6,6 @@ data = [
     ("e aí", "saudacao"),
     ("fala aí", "saudacao"),
     ("bom dia", "saudacao"),
-    
     ("boa tarde", "saudacao"),
     ("boa noite", "saudacao"),
     ("tudo bem?", "saudacao"),
@@ -28,6 +27,13 @@ data = [
     ("pode ajudar?", "ajuda"),
     ("como você funciona?", "ajuda"),
 
+    # CONFUSÃO
+    ("não entendi nada", "confusao"),
+    ("isso não faz sentido", "confusao"),
+    ("explica de novo", "confusao"),
+    ("tá confuso", "confusao"),
+    ("não saquei", "confusao"),
+
     # PERGUNTA GERAL
     ("o que é isso?", "pergunta_geral"),
     ("me explica", "pergunta_geral"),
@@ -39,6 +45,7 @@ data = [
     ("pode me explicar?", "pergunta_geral"),
     ("o que você acha?", "pergunta_geral"),
     ("me fala sobre isso", "pergunta_geral"),
+    ("me detalha isso", "pergunta_geral"),
 
     # AGRADECIMENTO
     ("obrigado", "agradecimento"),
@@ -46,6 +53,10 @@ data = [
     ("muito obrigado", "agradecimento"),
     ("agradeço", "agradecimento"),
     ("vlw", "agradecimento"),
+    ("valeu mesmo", "agradecimento"),
+    ("obg", "agradecimento"),
+    ("tmj", "agradecimento"),
+    ("brigadão", "agradecimento"),
 
     # DESPEDIDA
     ("tchau", "despedida"),
@@ -56,4 +67,10 @@ data = [
     ("tenho que ir", "despedida"),
     ("até depois", "despedida"),
     ("fui", "despedida"),
+    ("até amanhã", "despedida"),
+
+    # DESCONHECIDO
+    ("asdfgh", "desconhecido"),
+    ("????", "desconhecido"),
+    ("123123", "desconhecido"),
 ]

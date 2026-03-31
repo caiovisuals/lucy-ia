@@ -1,4 +1,4 @@
-from core.agent import responder
+from core.agent import respond
 
 print("Chat iniciado! (digite 'sair')\n")
 
@@ -9,4 +9,4 @@ while True:
         print("IA: Tchau!")
         break
 
-    print("IA:", responder(msg))
+    print("IA:", respond(msg))

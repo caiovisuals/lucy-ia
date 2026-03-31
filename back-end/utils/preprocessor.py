@@ -1,18 +1,18 @@
 import re
 import unicodedata
 
-def normalizar(texto: str) -> str:
+def normalize(text: str) -> str:
     # minúsculas
-    texto = texto.lower()
+    text = text.lower()
     
     # remove acentos (ó → o, ã → a, etc.)
-    texto = unicodedata.normalize("NFD", texto)
-    texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
+    text = unicodedata.normalize("NFD", text)
+    text = "".join(c for c in text if unicodedata.category(c) != "Mn")
     
     # remove pontuação e caracteres especiais
-    texto = re.sub(r"[^\w\s]", "", texto)
+    text = re.sub(r"[^\w\s]", "", text)
     
     # remove espaços extras
-    texto = texto.strip()
+    text = text.strip()
     
-    return texto
+    return text
