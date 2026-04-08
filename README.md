@@ -1,9 +1,9 @@
 # LUCY IA
 
-LucyIa é uma plataforma de inteligência artificial multiagente, projetada para resolver diferentes tipos de problemas com especialização, precisão e personalidade — semelhante a grandes ecossistemas de IA, mas com foco em agentes dedicados.    
+LucyIa é uma plataforma de inteligência artificial open-source multiagente, projetada para resolver diferentes tipos de problemas com especialização, precisão e personalidade — semelhante a grandes ecossistemas de IA, mas com foco em agentes dedicados.    
 Cada agente possui um papel específico, garantindo respostas mais eficientes, humanas e contextualizadas.
 
-## AGENTES
+## Agentes
 
 - Lucy 1.0 (perfeito para conversas profundas, conselhos, tentar levantar o humor do usuário)
 Focada em interações profundas e humanas.

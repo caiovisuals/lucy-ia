@@ -29,9 +29,13 @@ answers = {
     "despedida": ["Tchau!", "Até mais!", "A gente se vê!"]
 }
 
-def responder(message):
+def respond(message):
     message = normalize(message)
     vetor = vectorizer.transform([message])
     intent = model.predict(vetor)[0]
 
-    return random.choice(answers.get(intent, ["Perdão. Não entendi"]))
+    probs = model.predict_proba(vetor)[0]
+    confidence = max(probs)
+
+    if confidence < 0.6:
+        return "Não entendi muito bem. Pode reformular?"
