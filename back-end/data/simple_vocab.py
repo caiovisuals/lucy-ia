@@ -1,7 +1,7 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 
-from dataset import data
+from base_dataset import data
 from utils.preprocessor import normalize
 
 phrases = [normalize(text) for text, intent in data]

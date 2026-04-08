@@ -1,6 +1,6 @@
 import pickle
 from sklearn.naive_bayes import MultinomialNB
-from data.dataset import data
+from data.base_dataset import data
 from utils.vectorizer import vectorizer
 from utils.preprocessor import normalize
 
