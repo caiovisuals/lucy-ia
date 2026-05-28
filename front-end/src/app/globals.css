@@ -8,6 +8,16 @@
     font-display: swap;
 }
 
+:root {
+    --background: #ffffff;
+    --foreground: #E2C6BC;
+    --border: #d4c8c3;
+    --white-text: #ffffff;
+    --black-text: #000000;
+    --orange: #ff581b;
+    --orange-hover: #b94014;
+}
+
 * {
     font-family: 'Brockmann';
 }
@@ -49,12 +59,14 @@ button {
     transition: all 0.15s ease;
 }
 
-:root {
-    --background: #ffffff;
-    --foreground: #dabeb3;
-    --border: #d4c8c3;
-    --white-text: #ffffff;
-    --black-text: #000000;
-    --orange: #ff581b;
-    --orange-hover: #b94014;
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.bg-animated-gradient {
+    background: linear-gradient(270deg, #FFFCFC, #F9E9E3, #FFFCFC, #F4E8ED);
+    background-size: 800% 800%;
+    animation: gradientMove 15s ease infinite;
 }

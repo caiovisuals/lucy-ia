@@ -1,5 +1,6 @@
 "use client"
 
+import Select from "@/_components/ui/Select"
 import { useState, useEffect } from "react"
 
 type Props = { 
@@ -83,7 +84,7 @@ export default function ChatInput({ onSend, type = "home", text = "", setText }:
     }
 
     return (
-        <form className="relative flex flex-col w-full rounded-xl border-2 border-[var(--border)] overflow-clip justify-between" style={{ boxShadow: "rgba(0, 0, 0, 0.15) 0px 5px 30px 0px" }}>
+        <form className="relative flex flex-col w-full rounded-xl bg-[var(--background)] border-2 border-[var(--border)] justify-between" style={{ boxShadow: "rgba(0, 0, 0, 0.15) 0px 5px 30px 0px" }}>
             <textarea
                 id="mainTaskInput"
                 value={value}
@@ -101,29 +102,41 @@ export default function ChatInput({ onSend, type = "home", text = "", setText }:
                     }
                 }}
             />
-            <div className="flex flex-row p-4 gap-2 justify-end">
-                <label htmlFor="file-upload" className="rounded-full bg-transparent hover:bg-[#CCC] transition-normal size-[40px] flex items-center justify-center aspect-square cursor-pointer">
-                    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <path d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"></path>
-                    </svg>
-                    <input
-                        id="file-upload"
-                        type="file"
-                        accept="image/*,application/pdf"
-                        className="hidden"
-                        onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              console.log("Arquivo selecionado:", file);
-                            }
-                        }}
-                    />
-                </label>
-                <button type="submit" disabled={!text.trim()} className="rounded-full bg-transparent hover:bg-[#CCC] transition-normal size-[40px] flex items-center justify-center aspect-square">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <path d="m9 18 6-6-6-6"></path>
-                    </svg>
-                </button>
+            <div className="flex flex-row p-4 gap-2 items-center justify-between">
+                <Select 
+                    options={[
+                        { label: "Lucy 1.0", value: "lucy-1.0" },
+                        { label: "Jouli 1.0", value: "jouli-1.0" },
+                        { label: "Ricki 1.0", value: "ricki-1.0" },
+                    ]}
+                    value="lucy-1.0"
+                    placeholder="Escolha um agente"
+                    onChange={(val) => console.log("Selecionado:", val)}
+                />
+                <div className="flex flex-row gap-2 items-center justify-end">
+                    <label htmlFor="file-upload" className="rounded-full bg-transparent hover:bg-[var(--foreground)]/50 transition-normal size-[40px] flex items-center justify-center aspect-square cursor-pointer">
+                        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                            <path d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"></path>
+                        </svg>
+                        <input
+                            id="file-upload"
+                            type="file"
+                            accept="image/*,application/pdf"
+                            className="hidden"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0]
+                                if (file) {
+                                    console.log("Arquivo selecionado:", file)
+                                }
+                            }}
+                        />
+                    </label>
+                    <button type="submit" disabled={!text.trim()} className="rounded-full bg-transparent hover:bg-[var(--foreground)]/50 transition-normal size-[40px] flex items-center justify-center aspect-square">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                            <path d="m9 18 6-6-6-6"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </form>
     )

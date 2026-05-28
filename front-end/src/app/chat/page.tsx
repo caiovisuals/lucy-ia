@@ -1,9 +1,10 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, Suspense } from "react"
 import ChatBox from "@/_components/ui/ChatBox"
 import ChatInput from "@/_components/ui/ChatInput"
+import { sendMessage, type AgentId } from "@/_lib/services/api"
 
 type Message = {
     sender: "user" | "ia"
@@ -13,59 +14,91 @@ type Message = {
 type Conversation = {
     id: string
     task: string
+    agent: AgentId
     messages: Message[]
 }
 
-export default function ChatPage() {
-    const searchParams = useSearchParams()
-    const task = searchParams.get("task") || "Nova conversa"
-    const [inputValue, setInputValue] = useState("")
+const AGENT_NAMES: Record<AgentId, string> = {
+    lucy: "Lucy",
+    jouli: "Jouli",
+    ricki: "Ricki",
+}
 
+function ChatPageContent() {
+    const searchParams = useSearchParams()
+    const task = searchParams.get("task") || "Olá"
+    const agent = (searchParams.get("agent") as AgentId) || "lucy"
+
+    const [inputValue, setInputValue] = useState("")
     const [conversations, setConversations] = useState<Conversation[]>([])
     const [activeId, setActiveId] = useState<string | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const bottomRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        if (!activeId) {
-            const initConversation = async () => {
-                const id = Date.now().toString()
-                const response()
+        const initConversation = async () => {
+            const id = Date.now().toString()
+            setIsLoading(true)
 
-                const newConv: Conversation = {
-                    id,
-                    task,
-                    messages: [
-                        { sender: "user", content: task },
-                        { sender: "ia", content: response }
-                    ]
-                }
-
-                setConversations([newConv])
-                setActiveId(id)
+            let response = "..."
+            try {
+                response = await sendMessage(task, agent)
+            } catch {
+                response = "Não consegui me conectar. Verifique se o servidor está rodando."
+            } finally {
+                setIsLoading(false)
             }
 
-            initConversation()
+            const newConv: Conversation = {
+                id,
+                task,
+                agent,
+                messages: [
+                    { sender: "user", content: task },
+                    { sender: "ia", content: response },
+                ],
+            }
+
+            setConversations([newConv])
+            setActiveId(id)
         }
-    }, [activeId, task])
+
+        initConversation()
+    }, [])
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [conversations, isLoading])
 
     const activeConversation = conversations.find((c) => c.id === activeId)
 
     const handleSend = async (mensagem: string) => {
         if (!activeId || !mensagem.trim()) return
 
-        const response()
+        setConversations((prev) =>
+            prev.map((conv) =>
+                conv.id === activeId
+                    ? { ...conv, messages: [...conv.messages, { sender: "user", content: mensagem }] }
+                    : conv
+            )
+        )
+
+        setIsLoading(true)
+        let response = "..."
+
+        try {
+            response = await sendMessage(mensagem, activeConversation?.agent ?? agent)
+        } catch {
+            response = "Ocorreu um erro ao contatar a IA. Tente novamente."
+        } finally {
+            setIsLoading(false)
+        }
 
         setConversations((prev) =>
             prev.map((conv) =>
-              conv.id === activeId
-                ? {
-                    ...conv,
-                    messages: [
-                      ...conv.messages,
-                      { sender: "user", content: mensagem },
-                      { sender: "ia", content: response }
-                    ]
-                  }
-                : conv
+                conv.id === activeId
+                    ? { ...conv, messages: [...conv.messages, { sender: "ia", content: response }] }
+                    : conv
             )
         )
     }
@@ -74,17 +107,42 @@ export default function ChatPage() {
         <div className="relative flex flex-col flex-grow rounded p-4 pt-8 gap-4 overflow-hidden h-full">
             {activeConversation ? (
                 <div className="flex flex-col justify-between h-full">
-                    <div className="flex-grow overflow-y-auto">
+                    <div className="flex-grow overflow-y-auto pr-1">
                         <ChatBox messages={activeConversation.messages} />
+                        {isLoading && (
+                            <div className="flex justify-start">
+                                <div className="bg-[var(--foreground)] px-4 py-3 rounded-2xl rounded-bl-sm text-sm opacity-60">
+                                    {AGENT_NAMES[activeConversation.agent]} está digitando...
+                                </div>
+                            </div>
+                        )}
+                        <div ref={bottomRef} />
                     </div>
-                    <ChatInput onSend={handleSend} type="conversation" text={inputValue} setText={setInputValue}/>
+                    <ChatInput
+                        onSend={handleSend}
+                        type="conversation"
+                        text={inputValue}
+                        setText={setInputValue}
+                    />
                 </div>
             ) : (
-                <p>Selecione ou crie uma conversa para começar.</p>
+                <div className="flex items-center justify-center h-full opacity-50">
+                    <p>Iniciando conversa...</p>
+                </div>
             )}
             <div className="absolute top-0 flex items-center justify-center w-full">
-                <span className="text-[12px] font-[300] text-center">O RICKI pode cometer erros ao longo do uso. Por isso, lembre-se de sempre conferir informações relevantes.</span>
+                <span className="text-[12px] font-[300] text-center">
+                    {AGENT_NAMES[agent]} pode cometer erros. Lembre-se de verificar informações importantes.
+                </span>
             </div>
         </div>
+    )
+}
+
+export default function ChatPage() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-full opacity-50">Carregando...</div>}>
+            <ChatPageContent />
+        </Suspense>
     )
 }

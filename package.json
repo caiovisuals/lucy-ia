@@ -3,8 +3,9 @@
     "concurrently": "^9.2.1"
   },
     "scripts": {
+    "start": "concurrently -n FRONT,BACK -c \"blue,green\" \"npm run start-front\" \"npm run dev-back\"",
     "dev": "concurrently \"npm run dev-front\" \"npm run dev-back\"",
     "dev-front": "cd front-end && npm run dev",
-    "dev-back": "cd back-end && python main.py"
+    "dev-back": "cd back-end && python3 main.py || python main.py"
   }
 }

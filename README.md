@@ -13,7 +13,7 @@ Capaz de oferecer conselhos, suporte emocional leve e diálogos mais naturais e 
 Especialista em ensino.
 Explica conceitos complexos de forma clara, didática e adaptável ao nível do usuário, cobrindo diversas áreas do conhecimento.
 
-- Ricki (analisa repositorios e cria soluções envolvendo programação)
+- Ricki 1.0 (analisa repositorios e cria soluções envolvendo programação)
 Voltado para desenvolvimento de software.
 Analisa repositórios, identifica problemas e propõe soluções práticas e estruturadas, com foco em eficiência e boas práticas.
 

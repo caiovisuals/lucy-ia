@@ -1,4 +1,4 @@
-# CONTRIBUTING
+# CONTRIBUIÇÃO
 
 Obrigado por considerar contribuir para este projeto! Para manter a organização, siga as instruções abaixo. Este projeto busca construir um ecossistema de inteligência artificial multiagente open-source, e sua contribuição é essencial para evoluí-lo.
 

@@ -1,11 +1,12 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import ChatInput from "@/_components/ui/ChatInput"
+import type { AgentId } from "@/_lib/services/api"
 
-const defaultSuggestions  = [
+const defaultSuggestions = [
     "Me ensine sobre finanças",
     "Crie um plano de ação para mim",
     "Me ajude com meu TCC",
@@ -15,32 +16,54 @@ const defaultSuggestions  = [
     "Me recomende um livro",
 ]
 
+const AGENTS: { id: AgentId; name: string; emoji: string; description: string }[] = [
+    { id: "lucy", name: "Lucy", emoji: "🌸", description: "Conversa empática" },
+    { id: "jouli", name: "Jouli", emoji: "📚", description: "Ensina qualquer assunto" },
+    { id: "ricki", name: "Ricki", emoji: "💻", description: "Dev & código" },
+]
+
 export default function Home() {
     const router = useRouter()
+    
+    const [suggestions] = useState(() => {
+        return [...defaultSuggestions]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 4)
+    })
+    
     const [inputValue, setInputValue] = useState("")
-    const [suggestions, setSuggestions] = useState<string[]>([])
-
-    useEffect(() => {
-        const shuffleArray = (array: string[]) => {
-            return [...array].sort(() => Math.random() - 0.5)
-        }
-        setSuggestions(shuffleArray(defaultSuggestions).slice(0, 4))
-    }, [])
-
+    const [selectedAgent, setSelectedAgent] = useState<AgentId>("lucy")
+    
     const handleSend = (mensagem: string) => {
         if (!mensagem.trim()) return
-        router.push(`/chat?task=${encodeURIComponent(mensagem)}`)
+        router.push(`/chat?task=${encodeURIComponent(mensagem)}&agent=${selectedAgent}`)
     }
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center">
-            <div className="w-[60%] max-w-300 flex flex-col justify-center gap-y-5">
-                <h1 className="text-5xl">Boa tarde, <span className="font-bold">Caio</span></h1>
+        <div className="w-full h-full flex flex-col items-center justify-center bg-animated-gradient">
+            <div className="w-[80%] lg:w-[60%] max-w-300 flex flex-col justify-center gap-y-3 xl:gap-y-5">
+                <h1 className="text-5xl">Olá, <span className="font-bold">Caio</span></h1>
+                <div className="flex flex-row gap-2">
+                    {AGENTS.map((agent) => (
+                        <button
+                            key={agent.id}
+                            onClick={() => setSelectedAgent(agent.id)}
+                            className={`flex flex-col px-4 py-2 rounded-xl border-2 transition-normal text-left ${
+                                selectedAgent === agent.id
+                                    ? "border-[var(--orange)] bg-[var(--orange)]/10"
+                                    : "border-[var(--border)] hover:bg-[var(--foreground)]/50"
+                            }`}
+                        >
+                            <span className="text-base font-semibold">{agent.emoji} {agent.name}</span>
+                            <span className="text-xs opacity-60">{agent.description}</span>
+                        </button>
+                    ))}
+                </div>
                 <div className="flex flex-col gap-3">
                     <ChatInput onSend={handleSend} type="home" text={inputValue} setText={setInputValue} />
-                    <div className="hidden flex-row items-center justify-start gap-2 lg:flex">
+                    <div className="hidden flex-row flex-wrap items-center justify-start gap-2 lg:flex">
                         {suggestions.map((s, i) => (
-                            <div key={i} onClick={() => setInputValue(s)} className="px-4 py-1.5 rounded-lg border-2 border-[var(--border)] hover:bg-[var(--foreground)]/50 transition-normal whitespace-nowrap cursor-pointer text-sm">
+                            <div key={i} onClick={() => setInputValue(s)} className="px-4 py-1.5 rounded-lg border-2 border-[var(--border)] bg-[var(--background)] hover:bg-[var(--foreground)]/50 transition-normal whitespace-nowrap cursor-pointer text-sm">
                                 {s}
                             </div>
                         ))}

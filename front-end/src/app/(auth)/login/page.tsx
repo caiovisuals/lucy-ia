@@ -3,10 +3,10 @@
 import { useState } from "react"
 
 export default function Login() {
-    const [loading, setLoading] = useState(false);
-    const [emailOrUsername, setEmailOrUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [emailOrUsername, setEmailOrUsername] = useState("")
+    const [password, setPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
 
     const showPasswordIcon = () => {
         if (showPassword) {
@@ -15,7 +15,7 @@ export default function Login() {
                 <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
                 <circle cx="12" cy="12" r="3"></circle>
                 </>
-            );
+            )
         } else {
             return (
                 <>
@@ -24,9 +24,9 @@ export default function Login() {
                     <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"></path>
                     <path d="m2 2 20 20"></path>
                 </>
-            );
+            )
         }
-    };
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
