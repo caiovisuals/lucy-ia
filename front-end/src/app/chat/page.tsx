@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation"
 import { useState, useEffect, useRef, Suspense } from "react"
 import ChatBox from "@/_components/ui/ChatBox"
 import ChatInput from "@/_components/ui/ChatInput"
-import { sendMessage, type AgentId } from "@/_lib/services/api"
+import { sendMessage, createChatSession, saveChatMessage, type AgentId } from "@/_lib/services/api"
 
 type Message = {
     sender: "user" | "ia"
@@ -32,6 +32,7 @@ function ChatPageContent() {
     const [inputValue, setInputValue] = useState("")
     const [conversations, setConversations] = useState<Conversation[]>([])
     const [activeId, setActiveId] = useState<string | null>(null)
+    const [dbSessionId, setDbSessionId] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -41,12 +42,30 @@ function ChatPageContent() {
             setIsLoading(true)
 
             let response = "..."
+            let newDbSessionId: string | null = null
+            try {
+                const dbSession = await createChatSession(agent)
+                newDbSessionId = dbSession.id
+                setDbSessionId(dbSession.id)
+            } catch {
+                // non-blocking: continue even if DB session creation fails
+            }
+
             try {
                 response = await sendMessage(task, agent)
             } catch {
                 response = "Não consegui me conectar. Verifique se o servidor está rodando."
             } finally {
                 setIsLoading(false)
+            }
+
+            if (newDbSessionId) {
+                try {
+                    await saveChatMessage(newDbSessionId, "user", task)
+                    await saveChatMessage(newDbSessionId, "assistant", response)
+                } catch {
+                    // non-blocking
+                }
             }
 
             const newConv: Conversation = {
@@ -92,6 +111,15 @@ function ChatPageContent() {
             response = "Ocorreu um erro ao contatar a IA. Tente novamente."
         } finally {
             setIsLoading(false)
+        }
+
+        if (dbSessionId) {
+            try {
+                await saveChatMessage(dbSessionId, "user", mensagem)
+                await saveChatMessage(dbSessionId, "assistant", response)
+            } catch {
+                // non-blocking
+            }
         }
 
         setConversations((prev) =>
