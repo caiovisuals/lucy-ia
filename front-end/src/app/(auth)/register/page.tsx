@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { signIn } from "next-auth/react"
+import { registerSchema } from "@/_lib/validation/schemas"
 
 export default function Register() {
     const [loading, setLoading] = useState(false)
@@ -39,6 +40,17 @@ export default function Register() {
         e.preventDefault()
         setError(null)
         setFieldErrors({})
+
+        const parsed = registerSchema.safeParse({ name, username, email, password })
+        if (!parsed.success) {
+            const errs: Record<string, string> = {}
+            for (const issue of parsed.error.errors) {
+                const field = String(issue.path[0])
+                if (!errs[field]) errs[field] = issue.message
+            }
+            setFieldErrors(errs)
+            return
+        }
 
         if (password !== confirmPassword) {
             setFieldErrors({ confirmPassword: "As senhas não coincidem." })
@@ -186,11 +198,11 @@ export default function Register() {
                 </div>
 
                 <div className="flex flex-col gap-[3px] w-full relative">
-                    <label htmlFor="password" className="text-[20px]">
+                    <label htmlFor="confirmPassword" className="text-[20px]">
                         Confirmar Senha
                     </label>
                     <input
-                    id="password"
+                    id="confirmPassword"
                     type={showPassword ? "text" : "password"}
                     placeholder="Confirme sua senha"
                     value={confirmPassword}
