@@ -3,7 +3,6 @@
 import { useState, Suspense } from "react"
 import { signIn } from "next-auth/react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { loginSchema } from "@/_lib/validation/schemas"
 
 function LoginForm() {
     const [loading, setLoading] = useState(false)
@@ -40,12 +39,13 @@ function LoginForm() {
         setLoading(true)
         setError(null)
 
-        const parsed = loginSchema.safeParse({ email: emailOrUsername, password })
-        if (!parsed.success) {
-            setError(parsed.error.errors[0]?.message ?? "Dados inválidos.")
+        if (!emailOrUsername || emailOrUsername.length < 3 || !password) {
+            setError("Preencha todos os campos.")
             setLoading(false)
             return
         }
+
+        const safeCallback = callbackUrl?.startsWith("/") ? callbackUrl : "/chat"
 
         try {
             const result = await signIn("credentials", {
@@ -55,7 +55,7 @@ function LoginForm() {
             })
 
             if (result?.ok) {
-                router.push(callbackUrl ?? "/chat")
+                router.push(safeCallback)
             } else {
                 setError("E-mail/usuário ou senha inválidos.")
                 setLoading(false)
@@ -68,7 +68,8 @@ function LoginForm() {
     }
 
     const handleOAuth = (provider: "google" | "facebook") => {
-        signIn(provider, { callbackUrl })
+        const safeCallback = callbackUrl?.startsWith("/") ? callbackUrl : "/chat"
+        signIn(provider, { callbackUrl: safeCallback })
     }
     
     return (

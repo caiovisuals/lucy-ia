@@ -16,6 +16,9 @@ export async function POST(
   if (!owned) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const { role, content } = await req.json();
+  if (!["user", "assistant"].includes(role) || !content?.trim()) {
+    return NextResponse.json({ error: "Invalid role or content" }, { status: 400 });
+  }
   const message = await prisma.chatMessage.create({
     data: { sessionId: params.sessionId, role, content },
   });

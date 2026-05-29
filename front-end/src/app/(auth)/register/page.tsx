@@ -132,7 +132,7 @@ export default function Register() {
                 </div>
 
                 <div className="flex flex-col gap-[3px] w-full">
-                    <label htmlFor="name" className="text-[20px]">
+                    <label htmlFor="username" className="text-[20px]">
                         Nome de usuário
                     </label>
                     <input
