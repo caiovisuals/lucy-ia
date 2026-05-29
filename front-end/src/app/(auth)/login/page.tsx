@@ -2,7 +2,8 @@
 
 import { useState, Suspense } from "react"
 import { signIn } from "next-auth/react"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
+import { loginSchema } from "@/_lib/validation/schemas"
 
 function LoginForm() {
     const [loading, setLoading] = useState(false)
@@ -12,6 +13,7 @@ function LoginForm() {
     const [error, setError] = useState<string | null>(null)
     const searchParams = useSearchParams()
     const callbackUrl = searchParams.get("callbackUrl") ?? "/"
+    const router = useRouter()
 
     const showPasswordIcon = () => {
         if (showPassword) {
@@ -38,6 +40,13 @@ function LoginForm() {
         setLoading(true)
         setError(null)
 
+        const parsed = loginSchema.safeParse({ email: emailOrUsername, password })
+        if (!parsed.success) {
+            setError(parsed.error.issues[0]?.message ?? "Dados inválidos.")
+            setLoading(false)
+            return
+        }
+
         try {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -52,23 +61,22 @@ function LoginForm() {
 
             const data = await response.json()
 
-            if (!response.ok) {
+            if (response.ok) {
+                router.push(callbackUrl ?? "/chat")
+            } else {
+                setError("E-mail/usuário ou senha inválidos.")
                 setLoading(false)
                 return
             }
-
-            localStorage.setItem('riiqui_auth_token', data.token)
-            localStorage.setItem('riiqui_user_data', JSON.stringify(data.user))
-
-            window.location.href = '/'
         } catch (error) {
-            console.error('Login error:', error)
+            setError("Erro de conexão. Tente novamente.")
             setLoading(false)
         }
     }
 
     const handleOAuth = (provider: "google" | "facebook") => {
-        signIn(provider, { callbackUrl })
+        const safeCallback = callbackUrl?.startsWith("/") ? callbackUrl : "/chat"
+        signIn(provider, { callbackUrl: safeCallback })
     }
     
     return (

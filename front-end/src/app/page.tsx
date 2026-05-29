@@ -28,9 +28,9 @@ export default function Home() {
     const [inputValue, setInputValue] = useState("")
     const [selectedAgent, setSelectedAgent] = useState<AgentId>("lucy")
     
-    const handleSend = (mensagem: string) => {
-        if (!mensagem.trim()) return
-        router.push(`/chat?task=${encodeURIComponent(mensagem)}&agent=${selectedAgent}`)
+    const handleSend = (message: string) => {
+        if (!message.trim()) return
+        router.push(`/chat?task=${encodeURIComponent(message)}&agent=${selectedAgent}`)
     }
 
     return (

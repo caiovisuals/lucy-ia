@@ -30,3 +30,26 @@ export async function sendMessage(message: string, agent: AgentId): Promise<stri
     const data = await res.json()
     return data.response as string
 }
+
+export async function createChatSession(agent: string): Promise<{ id: string }> {
+    const res = await fetch("/api/chat/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agent }),
+    })
+    if (!res.ok) throw new Error("Failed to create chat session")
+    return res.json()
+}
+
+export async function saveChatMessage(
+  sessionId: string,
+  role: "user" | "assistant",
+  content: string
+): Promise<void> {
+    const res = await fetch(`/api/chat/sessions/${sessionId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role, content }),
+    })
+    if (!res.ok) throw new Error("Failed to save message")
+}
