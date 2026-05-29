@@ -16,12 +16,6 @@ const defaultSuggestions = [
     "Me recomende um livro",
 ]
 
-const AGENTS: { id: AgentId; name: string; emoji: string; description: string }[] = [
-    { id: "lucy", name: "Lucy", emoji: "🌸", description: "Conversa empática" },
-    { id: "jouli", name: "Jouli", emoji: "📚", description: "Ensina qualquer assunto" },
-    { id: "ricki", name: "Ricki", emoji: "💻", description: "Dev & código" },
-]
-
 export default function Home() {
     const router = useRouter()
     
@@ -43,22 +37,6 @@ export default function Home() {
         <div className="w-full h-full flex flex-col items-center justify-center bg-animated-gradient">
             <div className="w-[80%] lg:w-[60%] max-w-300 flex flex-col justify-center gap-y-3 xl:gap-y-5">
                 <h1 className="text-5xl">Olá, <span className="font-bold">Caio</span></h1>
-                <div className="flex flex-row gap-2">
-                    {AGENTS.map((agent) => (
-                        <button
-                            key={agent.id}
-                            onClick={() => setSelectedAgent(agent.id)}
-                            className={`flex flex-col px-4 py-2 rounded-xl border-2 transition-normal text-left ${
-                                selectedAgent === agent.id
-                                    ? "border-[var(--orange)] bg-[var(--orange)]/10"
-                                    : "border-[var(--border)] hover:bg-[var(--foreground)]/50"
-                            }`}
-                        >
-                            <span className="text-base font-semibold">{agent.emoji} {agent.name}</span>
-                            <span className="text-xs opacity-60">{agent.description}</span>
-                        </button>
-                    ))}
-                </div>
                 <div className="flex flex-col gap-3">
                     <ChatInput onSend={handleSend} type="home" text={inputValue} setText={setInputValue} />
                     <div className="hidden flex-row flex-wrap items-center justify-start gap-2 lg:flex">

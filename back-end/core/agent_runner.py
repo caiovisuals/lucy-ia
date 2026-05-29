@@ -1,18 +1,26 @@
 import os
 import pickle
+from typing import TYPE_CHECKING
 
-import torch
+if TYPE_CHECKING:
+    import torch
+    from core.model import Seq2Seq
+    from core.vocab import Vocab
 
 from core.vocab import Vocab
 from core.model import Seq2Seq, build_model
 
-_cache: dict[str, tuple[Seq2Seq, Vocab]] = {}
+_cache: dict = {}   
 
 AGENTS = ("lucy", "jouli", "ricki")
 
-def _load(agent_name: str) -> tuple[Seq2Seq, Vocab]:
+def _load(agent_name: str):
     if agent_name in _cache:
         return _cache[agent_name]
+
+    import torch
+    from core.vocab import Vocab
+    from core.model import build_model
 
     model_dir = os.path.join("agents", agent_name, "model")
     model_path = os.path.join(model_dir, "model.pt")
