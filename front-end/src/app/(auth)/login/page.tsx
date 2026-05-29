@@ -1,12 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
+import { signIn } from "next-auth/react"
+import { useSearchParams } from "next/navigation"
 
-export default function Login() {
+function LoginForm() {
     const [loading, setLoading] = useState(false)
     const [emailOrUsername, setEmailOrUsername] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const searchParams = useSearchParams()
+    const callbackUrl = searchParams.get("callbackUrl") ?? "/"
 
     const showPasswordIcon = () => {
         if (showPassword) {
@@ -31,6 +36,7 @@ export default function Login() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
+        setError(null)
 
         try {
             const response = await fetch('/api/auth/login', {
@@ -60,10 +66,19 @@ export default function Login() {
             setLoading(false)
         }
     }
+
+    const handleOAuth = (provider: "google" | "facebook") => {
+        signIn(provider, { callbackUrl })
+    }
     
     return (
         <div className="size-full flex flex-col justify-center items-center px-[22px]">
             <h1 className="text-[35px] mb-[15px]">Fazer Login</h1>
+            {error && (
+                <div className="w-full max-w-[500px] mb-4 p-3 bg-red-900/40 border border-red-600 rounded-[10px] text-red-300 text-[15px]">
+                    {error}
+                </div>
+            )}
             <form onSubmit={handleSubmit} className="w-full flex flex-col gap-[10px] items-center max-w-[500px]">
                 <div className="flex flex-col gap-[3px] w-full">
                     <label className="text-[20px]">
@@ -132,5 +147,13 @@ export default function Login() {
                 <span className="text-[10px] font-[300] text-center">Ao logar na sua conta no RICKI, você concorda com os <a href="/terms" className="text-gray-700 hover:text-gray-800 transition cursor-pointer">Termos e a Política de Privacidade.</a></span>
             </div>
         </div>
+    )
+}
+
+export default function Login() {
+    return (
+        <Suspense>
+            <LoginForm />
+        </Suspense>
     )
 }

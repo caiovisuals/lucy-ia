@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { signIn } from "next-auth/react"
 
 export default function Register() {
     const [loading, setLoading] = useState(false)
@@ -8,8 +9,11 @@ export default function Register() {
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [confirmpassword, setconfirmPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
+
+    const [error, setError] = useState<string | null>(null)
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
     const showPasswordIcon = () => {
         if (showPassword) {
@@ -33,8 +37,11 @@ export default function Register() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setError(null)
+        setFieldErrors({})
 
-        if (password !== confirmpassword) {
+        if (password !== confirmPassword) {
+            setFieldErrors({ confirmPassword: "As senhas não coincidem." })
             return
         }
 
@@ -46,33 +53,54 @@ export default function Register() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    password: password
-                })
+                body: JSON.stringify({name, username, email, password})
             })
 
             const data = await response.json()
 
             if (!response.ok) {
+                if (data.issues) {
+                    const errs: Record<string, string> = {}
+                    for (const issue of data.issues) {
+                        errs[String(issue.field)] = issue.message
+                    }
+                    setFieldErrors(errs)
+                } else {
+                    setError(data.error ?? "Erro ao criar conta.")
+                }
                 setLoading(false)
                 return
             }
 
-            localStorage.setItem('riiqui_auth_token', data.token)
-            localStorage.setItem('riiqui_user_data', JSON.stringify(data.user))
-
-            window.location.href = '/'
-        } catch (error) {
-            console.error('Register error:', error)
+            const result = await signIn("credentials", { email, password, redirect: false })
+            if (result?.error) {
+                window.location.href = "/login"
+            } else {
+                window.location.href = "/"
+            }
+        } catch {
+            setError("Erro de conexão. Tente novamente.")
             setLoading(false)
         }
     }
 
+    const handleOAuth = (provider: "google" | "facebook") => {
+        signIn(provider, { callbackUrl: "/" })
+    }
+
+    const FieldError = ({ field }: { field: string }) =>
+        fieldErrors[field] ? (
+            <span className="text-red-400 text-[13px] mt-[-3px]">{fieldErrors[field]}</span>
+        ) : null
+
     return (
         <div className="size-full flex flex-col justify-center items-center px-[22px]">
             <h1 className="text-[35px] mb-[15px]">Criar Conta</h1>
+            {error && (
+                <div className="w-full max-w-[500px] mb-4 p-3 bg-red-900/40 border border-red-600 rounded-[10px] text-red-300 text-[15px]">
+                    {error}
+                </div>
+            )}
             <form onSubmit={handleSubmit} className="w-full flex flex-col gap-[10px] items-center max-w-[500px]">
                 <div className="flex flex-col gap-[3px] w-full">
                     <label htmlFor="name" className="text-[20px]">
@@ -165,8 +193,8 @@ export default function Register() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Confirme sua senha"
-                    value={confirmpassword}
-                    onChange={(e) => setconfirmPassword(e.target.value)}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="w-full border-2 bg-[#333] border-[#444] p-[5px] px-[11.25px] text-[18px] text-[white] rounded-[15px] outline-none focus:border-[#555] transition-all duration-300 ease-in-out"
                     required
                     />
